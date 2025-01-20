@@ -5,7 +5,9 @@ class ContactRepository {
   final ApiService _apiService;
   ContactRepository(this._apiService);
 
-  Future<List<ContactModel>> getContact() => _apiService.getContact();
+  Future<List<ContactModel>> getContact(
+          {required int page, required int limit}) =>
+      _apiService.getContact(page, limit);
 
   Future<ContactModel> addContact(ContactModel contact) =>
       _apiService.addContact(contact);

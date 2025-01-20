@@ -9,7 +9,8 @@ abstract class ApiService {
   factory ApiService(Dio dio) => _ApiService(dio);
 
   @GET('news')
-  Future<List<ContactModel>> getContact();
+  Future<List<ContactModel>> getContact(
+      @Query("page") int page, @Query("limit") int limit);
 
   @POST('news')
   Future<ContactModel> addContact(@Body() ContactModel contact);

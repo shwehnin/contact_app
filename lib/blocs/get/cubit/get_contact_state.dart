@@ -13,11 +13,13 @@ final class GetContactLoading extends GetContactState {}
 
 final class GetContactSuccess extends GetContactState {
   final List<ContactModel> contactList;
+  final bool isLastpage;
 
-  const GetContactSuccess({required this.contactList});
+  const GetContactSuccess(
+      {required this.contactList, required this.isLastpage});
 
   @override
-  List<Object> get props => [contactList];
+  List<Object> get props => [contactList, isLastpage];
 }
 
 final class GetContactFailure extends GetContactState {
