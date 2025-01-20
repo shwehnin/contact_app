@@ -14,7 +14,7 @@ class _ApiService implements ApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://64b4d0420efb99d86269515d.mockapi.io/news';
+    baseUrl ??= 'https://64b4d0420efb99d86269515d.mockapi.io/';
   }
 
   final Dio _dio;
@@ -36,7 +36,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          '',
+          'news',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -72,7 +72,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          '',
+          'news',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -109,7 +109,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          '${id}',
+          'news/${id}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -142,7 +142,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          '${id}',
+          'news/${id}',
           queryParameters: queryParameters,
           data: _data,
         )

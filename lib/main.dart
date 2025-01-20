@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:contact_app/service_locator.dart';
+import 'package:contact_app/blocs/get/cubit/get_contact_cubit.dart';
 import 'package:contact_app/pages/contact/screen/contact_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  serviceLocator();
   return runApp(MyContactApp());
 }
 
@@ -24,7 +29,10 @@ class MyContactApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: ContactPage(),
+      home: BlocProvider<GetContactCubit>(
+        create: (context) => getIt.call(),
+        child: ContactPage(),
+      ),
     );
   }
 }

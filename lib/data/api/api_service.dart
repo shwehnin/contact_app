@@ -8,16 +8,16 @@ part 'api_service.g.dart';
 abstract class ApiService {
   factory ApiService(Dio dio) => _ApiService(dio);
 
-  @GET('')
+  @GET('news')
   Future<List<ContactModel>> getContact();
 
-  @POST('')
+  @POST('news')
   Future<ContactModel> addContact(@Body() ContactModel contact);
 
-  @PUT('{id}')
+  @PUT('news/{id}')
   Future<ContactModel> updateContact(
       @Path() String id, @Body() ContactModel contact);
 
-  @DELETE('{id}')
+  @DELETE('news/{id}')
   Future<ContactModel> deleteContact(@Path() String id);
 }
