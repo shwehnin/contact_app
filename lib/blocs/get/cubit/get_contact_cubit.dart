@@ -23,7 +23,6 @@ class GetContactCubit extends Cubit<GetContactState> {
     } else {
       emit(GetContactSuccess(contactList: _contacts, isLastpage: _isLastPage));
     }
-
     try {
       final data = await _contactRepository.getContact(
           page: _currentPage, limit: _limit);
@@ -48,6 +47,16 @@ class GetContactCubit extends Cubit<GetContactState> {
     //     .then((data) => emit(GetContactSuccess(contactList: data)))
     //     .catchError(
     //         (e) => emit(GetContactFailure(message: "Contact List Error $e")));
+  }
+
+  void searchContacts(String query) async {
+    emit(GetContactLoading());
+    try {
+      final data = await _contactRepository.searchContacts(query);
+      emit(GetContactSuccess(contactList: data, isLastpage: _isLastPage));
+    } catch (e) {
+      emit(GetContactFailure(message: "Search error: $e"));
+    }
   }
 
   void deleteContact(String id) {

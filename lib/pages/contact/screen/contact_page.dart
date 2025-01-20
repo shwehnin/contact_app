@@ -3,17 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:loadmore/loadmore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:contact_app/data/models/contact_model.dart';
+import 'package:contact_app/components/custom_text_field.dart';
 import 'package:contact_app/blocs/get/cubit/get_contact_cubit.dart';
 import 'package:contact_app/pages/contact/screen/add_contact_page.dart';
 
-class ContactPage extends StatelessWidget {
+class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
+
+  @override
+  State<ContactPage> createState() => _ContactPageState();
+}
+
+class _ContactPageState extends State<ContactPage> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Contact List"),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: CustomTextField(
+                onSubmit: (query) {
+                  context.read<GetContactCubit>().searchContacts(query);
+                },
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Search...',
+                controller: _searchController,
+                validateText: 'Search something...'),
+          ),
+        ),
       ),
       body: BlocConsumer<GetContactCubit, GetContactState>(
         listener: (context, state) {
