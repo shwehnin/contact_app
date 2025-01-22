@@ -2,7 +2,6 @@ import '../widgets/contact_list.dart';
 import 'package:flutter/material.dart';
 import 'package:loadmore/loadmore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:contact_app/data/models/contact_model.dart';
 import 'package:contact_app/components/custom_text_field.dart';
 import 'package:contact_app/blocs/get/cubit/get_contact_cubit.dart';
 import 'package:contact_app/pages/contact/screen/add_contact_page.dart';
