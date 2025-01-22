@@ -51,42 +51,35 @@ class _ContactPageState extends State<ContactPage> {
           }
         },
         builder: (context, state) {
-          if (state is GetContactSuccess) {
+          if (state is GetContactLoading && state.contactList.isEmpty) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is GetContactFailure) {
+            return Center(child: Text(state.message));
+          } else if (state is GetContactSuccess) {
             final contactList = state.contactList;
 
             return LoadMore(
               isFinish: state.isLastpage,
               onLoadMore: () async {
-                return await context
+                await context
                     .read<GetContactCubit>()
                     .getContact(isLoadMore: true);
+                return true;
               },
-              textBuilder: (status) {
-                switch (status) {
-                  case LoadMoreStatus.loading:
-                    return "Loading more contacts...";
-                  case LoadMoreStatus.nomore:
-                    return "No more contacts available.";
-                  default:
-                    return "Pull to load more";
-                }
-              },
-              child: ListView.builder(
-                itemCount: contactList.length,
-                itemBuilder: (context, index) {
-                  return ContactList(contact: contactList[index]);
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await context.read<GetContactCubit>().getContact();
                 },
+                child: ListView.builder(
+                  itemCount: contactList.length,
+                  itemBuilder: (context, index) {
+                    return ContactList(contact: contactList[index]);
+                  },
+                ),
               ),
             );
           }
-
-          if (state is GetContactFailure) {
-            return Center(child: Text(state.message));
-          }
-
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return SizedBox.shrink();
         },
       ),
       floatingActionButton: FloatingActionButton(

@@ -9,38 +9,37 @@ class GetContactCubit extends Cubit<GetContactState> {
   final ContactRepository _contactRepository;
   List<ContactModel> _contacts = [];
   int _currentPage = 1;
-  final int _limit = 10;
+  int _limit = 10;
   bool _isLastPage = false;
 
   GetContactCubit(this._contactRepository) : super(GetContactInitial()) {
     getContact();
   }
 
-  Future<bool> getContact({bool isLoadMore = false}) async {
-    if (_isLastPage && isLoadMore) return false;
-    if (!isLoadMore) {
-      emit(GetContactLoading());
-    } else {
-      emit(GetContactSuccess(contactList: _contacts, isLastpage: _isLastPage));
-    }
+  Future<void> getContact({bool isLoadMore = false}) async {
+    if (_isLastPage && isLoadMore) return;
+
     try {
+      if (!isLoadMore) {
+        _currentPage = 1;
+        _isLastPage = false;
+        _contacts.clear();
+        emit(GetContactLoading(contactList: _contacts));
+      }
       final data = await _contactRepository.getContact(
           page: _currentPage, limit: _limit);
       if (data.isEmpty) {
         _isLastPage = true;
       } else {
-        if (isLoadMore) {
-          _contacts.addAll(data);
-        } else {
-          _contacts = data;
-        }
+        _contacts.addAll(data);
         _currentPage++;
       }
+      if (isLoadMore) {
+        _limit += 10;
+      }
       emit(GetContactSuccess(contactList: _contacts, isLastpage: _isLastPage));
-      return true;
     } catch (e) {
       emit(GetContactFailure(message: "Contact List Error $e"));
-      return false;
     }
     // _contactRepository
     //     .getContact()
