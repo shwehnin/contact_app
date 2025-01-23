@@ -36,18 +36,26 @@ class GetContactCubit extends Cubit<GetContactState> {
               page: _currentPage, limit: _limit)
           : await _contactRepository.searchContacts(
               query: query, page: _currentPage, limit: _limit);
-      if (data.isEmpty || data.length < _limit) {
+      // if (data.isEmpty || data.length < _limit) {
+      //   _hasMore = false;
+      // }
+      if (data.isEmpty) {
+        if (_currentPage == 1) {
+          emit(GetContactSuccess(contactList: []));
+        }
         _hasMore = false;
-      }
-      if (!isLoadMore) {
-        _contacts = data;
       } else {
-        _contacts.addAll(data);
+        if (!isLoadMore) {
+          _contacts = data;
+        } else {
+          _contacts.addAll(data);
+        }
+        _currentPage++;
       }
-      _currentPage++;
       emit(GetContactSuccess(contactList: List.from(_contacts)));
     } catch (e) {
       emit(GetContactFailure(message: "Contact List Error $e"));
+      print("Get Contact Error $e");
     }
     // _contactRepository
     //     .getContact()

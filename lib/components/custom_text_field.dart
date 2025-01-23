@@ -25,17 +25,17 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      cursorColor: Color.fromARGB(255, 103, 53, 252),
+      // cursorColor: Color.fromARGB(255, 103, 53, 252),
       decoration: InputDecoration(
         filled: true,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none),
-        fillColor: Color.fromARGB(255, 209, 207, 207),
+        // fillColor: Color.fromARGB(255, 209, 207, 207),
         hintText: hintText,
         suffixIcon: Icon(suffixIcon),
         prefixIcon: prefixIcon,
-        hintStyle: TextStyle(color: const Color.fromARGB(255, 60, 2, 235)),
+        // hintStyle: TextStyle(color: const Color.fromARGB(255, 60, 2, 235)),
       ),
       keyboardType: keyboardType,
       validator: (value) {

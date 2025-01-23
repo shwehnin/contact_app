@@ -97,9 +97,10 @@ class _ContactPageState extends State<ContactPage> {
                                 .searchQuery
                                 .isEmpty
                             ? "No contact available."
-                            : "No results found for '${context.read<GetContactCubit>().searchQuery}"),
+                            : "No results found for ${context.read<GetContactCubit>().searchQuery}"),
                       )
                     : ListView.builder(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         itemCount: contactList.length,
                         itemBuilder: (context, index) {
                           return ContactList(contact: contactList[index]);
