@@ -13,7 +13,11 @@ abstract class ApiService {
       @Query("page") int page, @Query("limit") int limit);
 
   @GET('news')
-  Future<List<ContactModel>> searchContacts(@Query("search") String query);
+  Future<List<ContactModel>> searchContacts(
+    @Query("search") String query,
+    @Query("page") int page,
+    @Query("limit") int limit,
+  );
 
   @POST('news')
   Future<ContactModel> addContact(@Body() ContactModel contact);

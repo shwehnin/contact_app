@@ -9,8 +9,9 @@ class ContactRepository {
           {required int page, required int limit}) =>
       _apiService.getContact(page, limit);
 
-  Future<List<ContactModel>> searchContacts(String query) =>
-      _apiService.searchContacts(query);
+  Future<List<ContactModel>> searchContacts(
+          {required String query, required int page, required int limit}) =>
+      _apiService.searchContacts(query, page, limit);
 
   Future<ContactModel> addContact(ContactModel contact) =>
       _apiService.addContact(contact);

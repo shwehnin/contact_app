@@ -9,24 +9,17 @@ sealed class GetContactState extends Equatable {
 
 final class GetContactInitial extends GetContactState {}
 
-final class GetContactLoading extends GetContactState {
-  final List<ContactModel> contactList;
-
-  const GetContactLoading({this.contactList = const []});
-
-  @override
-  List<Object> get props => [contactList];
-}
+final class GetContactLoading extends GetContactState {}
 
 final class GetContactSuccess extends GetContactState {
   final List<ContactModel> contactList;
-  final bool isLastpage;
 
-  const GetContactSuccess(
-      {required this.contactList, required this.isLastpage});
+  const GetContactSuccess({
+    required this.contactList,
+  });
 
   @override
-  List<Object> get props => [contactList, isLastpage];
+  List<Object> get props => [contactList];
 }
 
 final class GetContactFailure extends GetContactState {

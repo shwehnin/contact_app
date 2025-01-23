@@ -33,6 +33,13 @@ class _ContactPageState extends State<ContactPage> {
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: CustomTextField(
                 onSubmit: (query) {
+                  if (query.isEmpty) {
+                    context.read<GetContactCubit>().getContact();
+                  } else {
+                    context.read<GetContactCubit>().searchContacts(query);
+                  }
+                },
+                onChange: (query) {
                   context.read<GetContactCubit>().searchContacts(query);
                 },
                 prefixIcon: Icon(Icons.search),
@@ -51,31 +58,53 @@ class _ContactPageState extends State<ContactPage> {
           }
         },
         builder: (context, state) {
-          if (state is GetContactLoading && state.contactList.isEmpty) {
+          if (state is GetContactLoading) {
             return Center(child: CircularProgressIndicator());
           } else if (state is GetContactFailure) {
             return Center(child: Text(state.message));
           } else if (state is GetContactSuccess) {
             final contactList = state.contactList;
 
-            return LoadMore(
-              isFinish: state.isLastpage,
-              onLoadMore: () async {
-                await context
-                    .read<GetContactCubit>()
-                    .getContact(isLoadMore: true);
-                return true;
+            return RefreshIndicator(
+              onRefresh: () async {
+                await context.read<GetContactCubit>().getContact();
               },
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await context.read<GetContactCubit>().getContact();
+              child: LoadMore(
+                isFinish: !context.read<GetContactCubit>().hasMore,
+                onLoadMore: () async {
+                  await context.read<GetContactCubit>().getContact(
+                      isLoadMore: true,
+                      query: context.read<GetContactCubit>().searchQuery);
+                  return true;
                 },
-                child: ListView.builder(
-                  itemCount: contactList.length,
-                  itemBuilder: (context, index) {
-                    return ContactList(contact: contactList[index]);
-                  },
-                ),
+                textBuilder: (LoadMoreStatus status) {
+                  switch (status) {
+                    case LoadMoreStatus.loading:
+                      return "Loading...";
+                    case LoadMoreStatus.nomore:
+                      return "No more contacts to load.";
+                    case LoadMoreStatus.fail:
+                      return "Failed to load contacts. Tap to retry.";
+                    case LoadMoreStatus.idle:
+                    default:
+                      return "Pull to load more";
+                  }
+                },
+                child: contactList.isEmpty
+                    ? Center(
+                        child: Text(context
+                                .read<GetContactCubit>()
+                                .searchQuery
+                                .isEmpty
+                            ? "No contact available."
+                            : "No results found for '${context.read<GetContactCubit>().searchQuery}"),
+                      )
+                    : ListView.builder(
+                        itemCount: contactList.length,
+                        itemBuilder: (context, index) {
+                          return ContactList(contact: contactList[index]);
+                        },
+                      ),
               ),
             );
           }

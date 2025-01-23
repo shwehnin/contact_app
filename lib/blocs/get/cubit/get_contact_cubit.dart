@@ -10,34 +10,42 @@ class GetContactCubit extends Cubit<GetContactState> {
   List<ContactModel> _contacts = [];
   int _currentPage = 1;
   int _limit = 10;
-  bool _isLastPage = false;
+  bool _hasMore = true;
+  bool get hasMore => _hasMore;
+  String _searchQuery = '';
+  String get searchQuery => _searchQuery;
 
   GetContactCubit(this._contactRepository) : super(GetContactInitial()) {
     getContact();
   }
 
-  Future<void> getContact({bool isLoadMore = false}) async {
-    if (_isLastPage && isLoadMore) return;
+  Future<void> getContact({bool isLoadMore = false, String query = ''}) async {
+    if (!isLoadMore) {
+      emit(GetContactLoading());
+      _currentPage = 1;
+      _hasMore = true;
+      _contacts.clear();
+      _searchQuery = query;
+    } else if (!_hasMore) {
+      return;
+    }
 
     try {
-      if (!isLoadMore) {
-        _currentPage = 1;
-        _isLastPage = false;
-        _contacts.clear();
-        emit(GetContactLoading(contactList: _contacts));
+      final data = query.isEmpty
+          ? await _contactRepository.getContact(
+              page: _currentPage, limit: _limit)
+          : await _contactRepository.searchContacts(
+              query: query, page: _currentPage, limit: _limit);
+      if (data.isEmpty || data.length < _limit) {
+        _hasMore = false;
       }
-      final data = await _contactRepository.getContact(
-          page: _currentPage, limit: _limit);
-      if (data.isEmpty) {
-        _isLastPage = true;
+      if (!isLoadMore) {
+        _contacts = data;
       } else {
         _contacts.addAll(data);
-        _currentPage++;
       }
-      if (isLoadMore) {
-        _limit += 10;
-      }
-      emit(GetContactSuccess(contactList: _contacts, isLastpage: _isLastPage));
+      _currentPage++;
+      emit(GetContactSuccess(contactList: List.from(_contacts)));
     } catch (e) {
       emit(GetContactFailure(message: "Contact List Error $e"));
     }
@@ -49,12 +57,10 @@ class GetContactCubit extends Cubit<GetContactState> {
   }
 
   void searchContacts(String query) async {
-    emit(GetContactLoading());
-    try {
-      final data = await _contactRepository.searchContacts(query);
-      emit(GetContactSuccess(contactList: data, isLastpage: _isLastPage));
-    } catch (e) {
-      emit(GetContactFailure(message: "Search error: $e"));
+    if (query.isEmpty) {
+      getContact();
+    } else {
+      getContact(query: query);
     }
   }
 

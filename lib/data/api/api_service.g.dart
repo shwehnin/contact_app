@@ -65,9 +65,17 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<ContactModel>> searchContacts(String query) async {
+  Future<List<ContactModel>> searchContacts(
+    String query,
+    int page,
+    int limit,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'search': query};
+    final queryParameters = <String, dynamic>{
+      r'search': query,
+      r'page': page,
+      r'limit': limit,
+    };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<ContactModel>>(Options(

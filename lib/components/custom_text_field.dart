@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
   final String validateText;
   final TextInputType? keyboardType;
   final void Function(String)? onSubmit;
+  final void Function(String)? onChange;
   const CustomTextField({
     super.key,
     required this.hintText,
@@ -17,6 +18,7 @@ class CustomTextField extends StatelessWidget {
     required this.validateText,
     this.keyboardType,
     this.onSubmit,
+    this.onChange,
   });
 
   @override
@@ -43,6 +45,7 @@ class CustomTextField extends StatelessWidget {
         return null;
       },
       onFieldSubmitted: onSubmit,
+      onChanged: onChange,
     );
   }
 }
