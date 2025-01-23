@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:contact_app/data/api/api_service.dart';
 import 'package:contact_app/data/models/contact_model.dart';
 
